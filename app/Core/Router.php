@@ -1,6 +1,8 @@
 <?php
 namespace App\Core;
 
+use App\Core\Database;
+
 class Router {
     private $routes = [];
     private $params = [];
@@ -65,7 +67,9 @@ class Router {
             $controller = "App\\Controllers\\{$controller}Controller";
 
             if (class_exists($controller)) {
-                $controller_object = new $controller();
+                // Получаем соединение с базой данных
+                $db = Database::getInstance()->getConnection();
+                $controller_object = new $controller($db);
 
                 $action = $this->params['action'] ?? 'index';
                 $action = $this->convertToCamelCase($action);

@@ -34,5 +34,27 @@ return [
     'user/logout' => [
         'controller' => 'user',
         'action' => 'logout'
+    ],
+    
+    // Маршруты для учителей
+    'teacher/registration' => [
+        'controller' => 'teacher',
+        'action' => 'showRegistration'
+    ],
+    'teacher/register' => [
+        'controller' => 'teacher',
+        'action' => 'register'
+    ],
+    'teacher/login' => [
+        'controller' => 'teacher',
+        'action' => 'showLogin'
+    ],
+    'teacher/authenticate' => [
+        'controller' => 'teacher',
+        'action' => 'login'
+    ],
+    'teacher/dashboard' => [
+        'controller' => 'teacher',
+        'action' => 'dashboard'
     ]
 ];
