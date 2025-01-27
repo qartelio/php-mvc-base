@@ -1,94 +1,136 @@
-<?php require_once __DIR__ . '/../layouts/header.php'; ?>
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход для преподавателя</title>
+    <!-- Tailwind CSS и Flowbite -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <!-- Heroicons (через CDN) -->
+    <script src="https://unpkg.com/@heroicons/v2/24/solid/esm/index.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
 
-<div class="min-h-screen bg-gray-900 py-6 flex flex-col justify-center sm:py-12">
-    <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div class="relative px-4 py-10 bg-gray-800 mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
-            <div class="max-w-md mx-auto">
-                <div class="flex items-center space-x-5">
-                    <div class="block pl-2 font-semibold text-xl self-start text-white">
-                        <h2 class="leading-relaxed">Вход для учителей</h2>
-                    </div>
-                </div>
-
-                <?php if (isset($_SESSION['error']) || isset($_SESSION['success'])): ?>
-                    <div class="mt-4 <?php echo isset($_SESSION['error']) ? 'text-red-500' : 'text-green-500'; ?>">
-                        <?php 
-                        if (isset($_SESSION['error'])) {
-                            echo $_SESSION['error'];
-                            unset($_SESSION['error']);
-                        }
-                        if (isset($_SESSION['success'])) {
-                            echo $_SESSION['success'];
-                            unset($_SESSION['success']);
-                        }
-                        ?>
+        // Функция для переключения видимости пароля
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const showIcon = button.querySelector('.password-show');
+            const hideIcon = button.querySelector('.password-hide');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                showIcon.classList.add('hidden');
+                hideIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                showIcon.classList.remove('hidden');
+                hideIcon.classList.add('hidden');
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div class="w-full bg-gray-800 rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
+                    Вход для преподавателя
+                </h1>
+                <?php if ($error = session()->getFlashdata('error')): ?>
+                    <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-red-900/50 border border-red-800" role="alert">
+                        <?= $error ?>
                     </div>
                 <?php endif; ?>
-
-                <form action="/teacher/login" method="POST">
-                    <div class="divide-y divide-gray-700">
-                        <div class="py-8 text-base leading-6 space-y-4 text-gray-300 sm:text-lg sm:leading-7">
-                            <div class="flex flex-col">
-                                <input type="email" name="email" id="email" 
-                                    class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-blue-500" 
-                                    placeholder="Email" required>
-                            </div>
-                            
-                            <div class="flex flex-col">
-                                <input type="password" name="password" id="password" 
-                                    class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-blue-500" 
-                                    placeholder="Пароль" required>
-                            </div>
-
-                            <div class="flex items-center">
-                                <input type="checkbox" name="remember" id="remember" 
-                                    class="w-4 h-4 text-blue-600 border-gray-600 rounded bg-gray-700 focus:ring-blue-500">
-                                <label for="remember" class="ml-2 text-sm text-gray-300">
-                                    Запомнить меня
-                                </label>
-                            </div>
+                <form class="space-y-4 md:space-y-6" action="/teacher/auth/login" method="POST">
+                    <!-- Email -->
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" /><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                            </svg>
                         </div>
-                        
-                        <div class="pt-4 flex items-center space-x-4">
-                            <button type="submit" 
-                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Войти
-                            </button>
-                        </div>
+                        <input type="email" id="email" name="email" class="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full pl-10 p-2.5" placeholder="Электронная почта" required>
                     </div>
-                </form>
 
-                <div class="pt-4 text-center text-gray-400">
-                    Нет аккаунта? 
-                    <a href="/teacher/registration" class="text-blue-500 hover:text-blue-600">Зарегистрироваться</a>
-                </div>
+                    <!-- Пароль -->
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input type="password" id="password" name="password" class="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full pl-10 pr-10 p-2.5" placeholder="Пароль" required>
+                        <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3" onclick="togglePasswordVisibility('password', this)">
+                            <svg class="w-4 h-4 text-gray-400 hover:text-gray-300 password-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                                <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd" />
+                            </svg>
+                            <svg class="w-4 h-4 text-gray-400 hover:text-gray-300 password-hide hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z" />
+                                <path d="M15.75 12c0 .18-.013.357-.037.53l-4.244-4.243A3.75 3.75 0 0115.75 12zM12.53 15.713l-4.243-4.244a3.75 3.75 0 004.243 4.243z" />
+                                <path d="M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 00-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 016.75 12z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="remember" name="remember" type="checkbox" class="w-4 h-4 border border-gray-600 rounded bg-gray-700 focus:ring-3 focus:ring-blue-600">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="remember" class="font-light text-gray-300">Запомнить меня</label>
+                            </div>
+                        </div>
+                        <a href="/teacher/auth/forgot-password" class="text-sm font-medium text-blue-500 hover:underline">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Войти
+                    </button>
+
+                    <p class="text-sm font-light text-gray-400">
+                        Нет аккаунта? <a href="/teacher/auth/register" class="font-medium text-blue-500 hover:underline">Зарегистрироваться</a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    <?php if (isset($_SESSION['error'])): ?>
-        Swal.fire({
-            icon: 'error',
-            title: 'Ошибка',
-            text: '<?php echo $_SESSION['error']; ?>',
-            background: '#1F2937',
-            color: '#fff'
-        });
-    <?php endif; ?>
+    <!-- Flowbite JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
     
-    <?php if (isset($_SESSION['success'])): ?>
-        Swal.fire({
-            icon: 'success',
-            title: 'Успешно',
-            text: '<?php echo $_SESSION['success']; ?>',
-            background: '#1F2937',
-            color: '#fff'
-        });
-    <?php endif; ?>
-});
-</script>
+    <!-- Скрипт для уведомлений и управления паролем -->
+    <script>
+        // Проверка на ошибки из сессии или флеш-сообщений
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (session()->has('error')): ?>
+                Swal.fire({
+                    title: 'Ошибка!',
+                    text: '<?= session('error') ?>',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    background: '#1F2937',
+                    color: '#fff'
+                });
+            <?php endif; ?>
 
-<?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+            <?php if (session()->has('success')): ?>
+                Swal.fire({
+                    title: 'Успешно!',
+                    text: '<?= session('success') ?>',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    background: '#1F2937',
+                    color: '#fff'
+                });
+            <?php endif; ?>
+        });
+    </script>
+</body>
+</html>
