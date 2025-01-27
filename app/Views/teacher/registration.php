@@ -147,9 +147,32 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <button type="submit" id="registerButton" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center opacity-50 cursor-not-allowed" disabled>
                         Зарегистрироваться
                     </button>
+
+                    <script>
+                        // Получаем элементы
+                        const agreementCheckbox = document.getElementById('agreement');
+                        const registerButton = document.getElementById('registerButton');
+
+                        // Функция для обновления состояния кнопки
+                        function updateButtonState() {
+                            if (agreementCheckbox.checked) {
+                                registerButton.disabled = false;
+                                registerButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                            } else {
+                                registerButton.disabled = true;
+                                registerButton.classList.add('opacity-50', 'cursor-not-allowed');
+                            }
+                        }
+
+                        // Слушаем изменения чекбокса
+                        agreementCheckbox.addEventListener('change', updateButtonState);
+
+                        // Устанавливаем начальное состояние
+                        updateButtonState();
+                    </script>
 
                     <p class="text-sm font-light text-gray-400">
                         Уже есть аккаунт? <a href="/teacher/auth/login" class="font-medium text-blue-500 hover:underline">Войти</a>
