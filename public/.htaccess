@@ -1,0 +1,12 @@
+# Включаем движок преобразования
+RewriteEngine On
+
+# Устанавливаем базовую директорию для преобразований
+RewriteBase /
+
+# Если запрашиваемый файл или директория существуют физически, отдаем их
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# В противном случае перенаправляем все запросы на index.php
+RewriteRule ^(.*)$ index.php [QSA,L]

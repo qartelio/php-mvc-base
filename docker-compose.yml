@@ -1,0 +1,48 @@
+services:
+  # PHP с Apache
+  php-apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8085:80"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      - MYSQL_DB=myapp
+
+  # MySQL 8
+  mysql:
+    image: mysql:8
+    platform: linux/arm64/v8
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=myapp
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/migrations:/docker-entrypoint-initdb.d
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: arm64v8/phpmyadmin
+    ports:
+      - "8086:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - PMA_ARBITRARY=1
+      - PMA_USER=root
+      - PMA_PASSWORD=rootpassword
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
