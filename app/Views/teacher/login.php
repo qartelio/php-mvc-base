@@ -41,11 +41,6 @@
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
                     Вход для преподавателя
                 </h1>
-                <?php if ($error = session()->getFlashdata('error')): ?>
-                    <div class="p-4 mb-4 text-sm text-red-400 rounded-lg bg-red-900/50 border border-red-800" role="alert">
-                        <?= $error ?>
-                    </div>
-                <?php endif; ?>
                 <form class="space-y-4 md:space-y-6" action="/teacher/auth/login" method="POST">
                     <!-- Email -->
                     <div class="relative">
@@ -109,27 +104,6 @@
     <script>
         // Проверка на ошибки из сессии или флеш-сообщений
         document.addEventListener('DOMContentLoaded', function() {
-            <?php if (session()->has('error')): ?>
-                Swal.fire({
-                    title: 'Ошибка!',
-                    text: '<?= session('error') ?>',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    background: '#1F2937',
-                    color: '#fff'
-                });
-            <?php endif; ?>
-
-            <?php if (session()->has('success')): ?>
-                Swal.fire({
-                    title: 'Успешно!',
-                    text: '<?= session('success') ?>',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    background: '#1F2937',
-                    color: '#fff'
-                });
-            <?php endif; ?>
         });
     </script>
 </body>

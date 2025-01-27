@@ -9,12 +9,6 @@ define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 // Подключаем автозагрузчик Composer
 require_once ROOT . 'vendor/autoload.php';
 
-// Подключаем хелпер для работы с сессиями
-require_once ROOT . 'app/Helpers/session_helper.php';
-
-// Инициализируем сессию до любого вывода
-\App\Core\Session::init();
-
 // Создаем экземпляр маршрутизатора
 $router = new \App\Core\Router();
 
