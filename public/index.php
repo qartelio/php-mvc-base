@@ -3,6 +3,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Запускаем сессию
+session_start();
+
 // Определяем корневую директорию
 define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
