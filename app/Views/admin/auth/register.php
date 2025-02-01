@@ -30,7 +30,7 @@
             <?php endif; ?>
 
             <!-- Форма регистрации -->
-            <form class="mt-8 space-y-6" action="" method="POST">
+            <form class="mt-8 space-y-6" action="/admin/register/store" method="POST">
                 <div class="space-y-4">
                     <!-- Имя -->
                     <div class="relative">
@@ -67,10 +67,10 @@
                     <div class="relative">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                             <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                             </svg>
                         </div>
-                        <input type="password" name="password_confirmation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition duration-150 ease-in-out" placeholder="Подтвердите пароль" required>
+                        <input type="password" name="password_confirm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition duration-150 ease-in-out" placeholder="Подтвердите пароль" required>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                 <div class="text-center mt-4">
                     <p class="text-sm text-gray-600">
                         Уже есть аккаунт?
-                        <a href="/admin/auth/login" class="font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                        <a href="/admin/login" class="font-medium text-blue-600 hover:text-blue-500 hover:underline">
                             Войти
                         </a>
                     </p>

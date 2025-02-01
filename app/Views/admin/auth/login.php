@@ -30,7 +30,7 @@
             <?php endif; ?>
 
             <!-- Форма входа -->
-            <form class="mt-8 space-y-6" action="" method="POST">
+            <form class="mt-8 space-y-6" action="/admin/login/auth" method="POST">
                 <div class="space-y-4">
                     <!-- Email -->
                     <div class="relative">
@@ -53,6 +53,12 @@
                     </div>
                 </div>
 
+                <!-- Запомнить меня -->
+                <div class="flex items-center">
+                    <input type="checkbox" name="remember" id="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="remember" class="ms-2 text-sm text-gray-600">Запомнить меня</label>
+                </div>
+
                 <!-- Кнопка входа -->
                 <div>
                     <button type="submit" class="group relative flex w-full justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition duration-150 ease-in-out">
@@ -63,7 +69,7 @@
                 <!-- Ссылка на регистрацию -->
                 <div class="text-center mt-4">
                     <span class="text-sm text-gray-600">Нет аккаунта? </span>
-                    <a href="/admin/auth/register" class="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">Зарегистрироваться</a>
+                    <a href="/admin/register" class="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">Зарегистрироваться</a>
                 </div>
             </form>
         </div>

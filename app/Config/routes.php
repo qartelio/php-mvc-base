@@ -34,5 +34,52 @@ return [
     'student/logout' => [
         'controller' => 'student',
         'action' => 'logout'
-    ]
+    ],
+
+    // Маршруты для администраторов
+    'admin' => [
+        'controller' => 'admin',
+        'action' => 'dashboard',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/register' => [
+        'controller' => 'admin',
+        'action' => 'showRegister'
+    ],
+    'admin/register/store' => [
+        'controller' => 'admin',
+        'action' => 'register'
+    ],
+    'admin/login' => [
+        'controller' => 'admin',
+        'action' => 'showLogin'
+    ],
+    'admin/login/auth' => [
+        'controller' => 'admin',
+        'action' => 'login'
+    ],
+    'admin/logout' => [
+        'controller' => 'admin',
+        'action' => 'logout'
+    ],
+    'admin/dashboard' => [
+        'controller' => 'admin',
+        'action' => 'dashboard',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/attendance' => [
+        'controller' => 'admin',
+        'action' => 'attendance',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/lessons' => [
+        'controller' => 'admin',
+        'action' => 'lessons',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/students' => [
+        'controller' => 'admin',
+        'action' => 'students',
+        'middleware' => ['AdminAuth']
+    ],
 ];
