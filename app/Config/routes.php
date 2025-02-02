@@ -105,8 +105,23 @@ return [
 
     // Маршруты для управления студентами
     'admin/students' => [
-        'controller' => 'admin',
-        'action' => 'students',
+        'controller' => 'admin/student',
+        'action' => 'index',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/students/update' => [
+        'controller' => 'admin/student',
+        'action' => 'update',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/students/toggle-status' => [
+        'controller' => 'admin/student',
+        'action' => 'toggleStatus',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/students/delete' => [
+        'controller' => 'admin/student',
+        'action' => 'delete',
         'middleware' => ['AdminAuth']
     ],
 
