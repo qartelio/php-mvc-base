@@ -33,27 +33,62 @@
             <!-- Расписание -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Расписание занятий</h2>
+                <?php
+                // Массив с расписанием для каждой группы
+                $schedules = [
+                    1 => [
+                        ['day' => 'Вторник', 'time' => '20:00'],
+                        ['day' => 'Пятница', 'time' => '20:00']
+                    ],
+                    2 => [
+                        ['day' => 'Среда', 'time' => '20:00'],
+                        ['day' => 'Пятница', 'time' => '20:00']
+                    ],
+                    3 => [
+                        ['day' => 'Четверг', 'time' => '20:00'],
+                        ['day' => 'Пятница', 'time' => '20:00']
+                    ],
+                    4 => [
+                        ['day' => 'Понедельник', 'time' => '20:00'],
+                        ['day' => 'Пятница', 'time' => '20:00']
+                    ],
+                    5 => [
+                        ['day' => 'Понедельник', 'time' => '20:00'],
+                        ['day' => 'Вторник', 'time' => '20:00'],
+                        ['day' => 'Среда', 'time' => '20:00'],
+                        ['day' => 'Четверг', 'time' => '20:00']
+                    ],
+                    6 => [
+                        ['day' => 'Понедельник', 'time' => '20:00'],
+                        ['day' => 'Среда', 'time' => '20:00'],
+                        ['day' => 'Четверг', 'time' => '20:00'],
+                        ['day' => 'Суббота', 'time' => '20:00']
+                    ]
+                ];
+
+                // Получаем расписание для текущей группы
+                $groupId = isset($student) && isset($student['group_id']) ? $student['group_id'] : null;
+                $currentSchedule = isset($schedules[$groupId]) ? $schedules[$groupId] : [];
+                ?>
+
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- Вторник -->
-                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                        <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="font-semibold text-gray-800">Вторник</span>
+                    <?php if (empty($currentSchedule)): ?>
+                        <div class="col-span-2 bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+                            <p class="text-yellow-700">Расписание для вашей группы не найдено</p>
                         </div>
-                        <p class="text-blue-600 font-bold">20:00</p>
-                    </div>
-                    <!-- Пятница -->
-                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                        <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="font-semibold text-gray-800">Пятница</span>
-                        </div>
-                        <p class="text-blue-600 font-bold">20:00</p>
-                    </div>
+                    <?php else: ?>
+                        <?php foreach ($currentSchedule as $schedule): ?>
+                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                <div class="flex items-center mb-2">
+                                    <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="font-semibold text-gray-800"><?= htmlspecialchars($schedule['day']) ?></span>
+                                </div>
+                                <p class="text-blue-600 font-bold"><?= htmlspecialchars($schedule['time']) ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 

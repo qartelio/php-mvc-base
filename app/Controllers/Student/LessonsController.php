@@ -47,7 +47,10 @@ class LessonsController extends Controller
             $lesson['is_active'] = $this->isLessonActive($lesson['datetime']);
         }
 
-        $this->view->render('student/lessons', ['lessons' => $lessons]);
+        $this->view->render('student/lessons', [
+            'lessons' => $lessons,
+            'student' => $student
+        ]);
     }
 
     /**
