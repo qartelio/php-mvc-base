@@ -36,7 +36,7 @@ return [
         'action' => 'logout'
     ],
     
-    // Новые маршруты для уроков
+    // Маршруты для уроков студентов
     'student/lessons' => [
         'controller' => 'student/lessons',
         'action' => 'index',
@@ -49,11 +49,6 @@ return [
     ],
 
     // Маршруты для администраторов
-    'admin' => [
-        'controller' => 'admin',
-        'action' => 'dashboard',
-        'middleware' => ['AdminAuth']
-    ],
     'admin/register' => [
         'controller' => 'admin',
         'action' => 'showRegister'
@@ -70,22 +65,29 @@ return [
         'controller' => 'admin',
         'action' => 'login'
     ],
-    'admin/logout' => [
+    'admin' => [
         'controller' => 'admin',
-        'action' => 'logout'
+        'action' => 'dashboard',
+        'middleware' => ['AdminAuth']
     ],
     'admin/dashboard' => [
         'controller' => 'admin',
         'action' => 'dashboard',
         'middleware' => ['AdminAuth']
     ],
-    'admin/attendance' => [
+    'admin/logout' => [
         'controller' => 'admin',
-        'action' => 'attendance',
+        'action' => 'logout'
+    ],
+
+    // Маршруты для управления студентами
+    'admin/students' => [
+        'controller' => 'admin',
+        'action' => 'students',
         'middleware' => ['AdminAuth']
     ],
 
-    // Маршруты для уроков
+    // Маршруты для управления уроками
     'admin/lessons' => [
         'controller' => 'admin/lessons',
         'action' => 'index',
@@ -107,10 +109,20 @@ return [
         'middleware' => ['AdminAuth']
     ],
 
-    // Маршрут для студентов
-    'admin/students' => [
-        'controller' => 'admin',
-        'action' => 'students',
+    // Маршруты для управления посещаемостью
+    'admin/attendance' => [
+        'controller' => 'admin/attendance',
+        'action' => 'index',
         'middleware' => ['AdminAuth']
     ],
+    'admin/attendance/update' => [
+        'controller' => 'admin/attendance',
+        'action' => 'updateAttendance',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/attendance/points' => [
+        'controller' => 'admin/attendance',
+        'action' => 'managePoints',
+        'middleware' => ['AdminAuth']
+    ]
 ];

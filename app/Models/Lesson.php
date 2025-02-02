@@ -117,6 +117,22 @@ class Lesson extends Model
     }
 
     /**
+     * Проверяет существование урока
+     */
+    public function exists($id)
+    {
+        try {
+            $sql = "SELECT id FROM lessons WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+            return $stmt->fetch() !== false;
+        } catch (PDOException $e) {
+            error_log('Ошибка при проверке существования урока: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Удаляет урок по ID
      * 
      * @param int $id ID урока
@@ -166,6 +182,43 @@ class Lesson extends Model
                 'success' => false,
                 'message' => 'Произошла ошибка при удалении урока'
             ];
+        }
+    }
+
+    /**
+     * Получает список всех уроков с информацией о посещаемости студентов
+     */
+    public function getAllWithAttendance()
+    {
+        try {
+            // Получаем все уроки
+            $lessons = $this->getAllWithCreator();
+            
+            // Для каждого урока получаем список студентов соответствующей группы
+            foreach ($lessons as &$lesson) {
+                // Получаем студентов группы
+                $sql = "SELECT s.*, 
+                       CASE WHEN a.id IS NOT NULL THEN 1 ELSE 0 END as attended,
+                       lap.points as activity_points
+                       FROM students s
+                       LEFT JOIN attendance a ON a.student_id = s.id AND a.lesson_id = :lesson_id
+                       LEFT JOIN lesson_activity_points lap ON lap.student_id = s.id AND lap.lesson_id = :lesson_id
+                       WHERE s.group_id = :group_id
+                       ORDER BY s.name";
+                
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    'lesson_id' => $lesson['id'],
+                    'group_id' => $lesson['group']
+                ]);
+                
+                $lesson['students'] = $stmt->fetchAll();
+            }
+            
+            return $lessons;
+        } catch (PDOException $e) {
+            error_log('Ошибка при получении списка уроков с посещаемостью: ' . $e->getMessage());
+            return [];
         }
     }
 }
