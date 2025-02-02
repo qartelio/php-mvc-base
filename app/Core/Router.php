@@ -13,10 +13,15 @@ class Router {
     public function add($route, $params = []) {
         // Преобразуем маршрут в регулярное выражение
         $route = preg_replace('/\//', '\\/', $route);
-        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
+        
+        // Поддержка числовых параметров
+        $route = preg_replace('/\(([0-9]+)\)/', '(\d+)', $route);
+        
+        // Поддержка именованных параметров
+        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[^\/]+)', $route);
         $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
+        
         $route = '/^' . $route . '$/i';
-
         $this->routes[$route] = $params;
     }
 
@@ -26,9 +31,13 @@ class Router {
     public function match($url) {
         foreach ($this->routes as $route => $params) {
             if (preg_match($route, $url, $matches)) {
+                // Добавляем числовые параметры
                 foreach ($matches as $key => $match) {
                     if (is_string($key)) {
                         $params[$key] = $match;
+                    } elseif (is_numeric($key) && $key > 0) {
+                        // Добавляем числовой параметр в params
+                        $params['id'] = $match;
                     }
                 }
                 $this->params = $params;
@@ -75,14 +84,26 @@ class Router {
                 $action = $this->convertToCamelCase($action);
 
                 if (method_exists($controller_object, $action)) {
-                    return $controller_object->$action();
+                    // Передаем параметры в метод контроллера
+                    return $controller_object->$action($this->params);
                 }
             }
         }
         
-        // Если маршрут не найден, показываем 404
-        header("HTTP/1.0 404 Not Found");
-        echo "Страница не найдена";
+        // Проверяем, является ли запрос AJAX
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Маршрут не найден'
+            ]);
+        } else {
+            // Для обычных запросов показываем HTML страницу 404
+            header("HTTP/1.0 404 Not Found");
+            echo "Страница не найдена";
+        }
     }
 
     /**

@@ -1,7 +1,17 @@
 <?php
-// Включаем отображение ошибок в режиме разработки
+// Проверяем, является ли запрос AJAX
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+// Настраиваем отображение ошибок
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+if ($isAjax) {
+    // Для AJAX-запросов отключаем отображение ошибок
+    ini_set('display_errors', 0);
+} else {
+    // Для обычных запросов включаем в режиме разработки
+    ini_set('display_errors', 1);
+}
 
 // Запускаем сессию
 session_start();

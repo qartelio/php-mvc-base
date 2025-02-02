@@ -77,6 +77,21 @@ return [
         'action' => 'lessons',
         'middleware' => ['AdminAuth']
     ],
+    'admin/lessons/create' => [
+        'controller' => 'admin',
+        'action' => 'createLesson',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/lessons/update' => [
+        'controller' => 'admin',
+        'action' => 'updateLesson',
+        'middleware' => ['AdminAuth']
+    ],
+    'admin/lessons/delete/([0-9]+)' => [
+        'controller' => 'admin',
+        'action' => 'deleteLesson',
+        'middleware' => ['AdminAuth']
+    ],
     'admin/students' => [
         'controller' => 'admin',
         'action' => 'students',
