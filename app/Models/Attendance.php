@@ -58,19 +58,54 @@ class Attendance extends Model
     public function updateAttendance($lessonId, $studentId, $attended)
     {
         try {
+            $this->db->beginTransaction();
+
             if ($attended) {
                 if (!$this->hasAttended($lessonId, $studentId)) {
+                    // Создаем запись о посещении
                     $sql = "INSERT INTO {$this->table} (lesson_id, student_id, visited_at) VALUES (?, ?, NOW())";
                     $stmt = $this->db->prepare($sql);
-                    return $stmt->execute([$lessonId, $studentId]);
+                    $attendanceResult = $stmt->execute([$lessonId, $studentId]);
+
+                    if ($attendanceResult) {
+                        // Создаем запись о баллах
+                        $lessonPoint = new LessonPoint();
+                        $pointsResult = $lessonPoint->createPoints($lessonId, $studentId);
+
+                        if (!$pointsResult) {
+                            $this->db->rollBack();
+                            return false;
+                        }
+                    } else {
+                        $this->db->rollBack();
+                        return false;
+                    }
                 }
-                return true;
             } else {
+                // Удаляем запись о посещении
                 $sql = "DELETE FROM {$this->table} WHERE lesson_id = ? AND student_id = ?";
                 $stmt = $this->db->prepare($sql);
-                return $stmt->execute([$lessonId, $studentId]);
+                $attendanceResult = $stmt->execute([$lessonId, $studentId]);
+
+                if ($attendanceResult) {
+                    // Удаляем запись о баллах
+                    $lessonPoint = new LessonPoint();
+                    $pointsResult = $lessonPoint->deletePoints($lessonId, $studentId);
+
+                    if (!$pointsResult) {
+                        $this->db->rollBack();
+                        return false;
+                    }
+                } else {
+                    $this->db->rollBack();
+                    return false;
+                }
             }
+
+            $this->db->commit();
+            return true;
         } catch (\PDOException $e) {
+            $this->db->rollBack();
             error_log('Ошибка при обновлении посещаемости: ' . $e->getMessage());
             return false;
         }

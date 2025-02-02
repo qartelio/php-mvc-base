@@ -61,4 +61,33 @@ class LessonPoint extends Model
             return 0;
         }
     }
+
+    /**
+     * Удаляет запись о баллах за посещение урока
+     */
+    public function deletePoints($lessonId, $studentId)
+    {
+        try {
+            error_log("Удаление записи о баллах для урока {$lessonId} и студента {$studentId}");
+            
+            $sql = "DELETE FROM {$this->table} WHERE lesson_id = ? AND student_id = ?";
+            error_log("SQL запрос: {$sql}");
+            
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute([$lessonId, $studentId]);
+            
+            if (!$result) {
+                $error = $stmt->errorInfo();
+                error_log("Ошибка при выполнении запроса: " . print_r($error, true));
+                return false;
+            }
+            
+            error_log("Запись о баллах успешно удалена");
+            return true;
+        } catch (\PDOException $e) {
+            error_log('Ошибка при удалении записи о баллах: ' . $e->getMessage());
+            error_log('SQL состояние: ' . $e->getCode());
+            return false;
+        }
+    }
 }
