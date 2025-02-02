@@ -71,9 +71,22 @@ class Router {
         $url = $this->parseUrl();
         
         if ($this->match($url)) {
-            $controller = $this->params['controller'];
-            $controller = $this->convertToStudlyCaps($controller);
-            $controller = "App\\Controllers\\{$controller}Controller";
+            $controllerPath = $this->params['controller'];
+            $controllerParts = explode('/', $controllerPath);
+            
+            // Преобразуем каждую часть пути в StudlyCaps
+            $controllerParts = array_map([$this, 'convertToStudlyCaps'], $controllerParts);
+            
+            // Последняя часть - это имя контроллера
+            $controllerName = array_pop($controllerParts) . 'Controller';
+            
+            // Если есть подпапки, добавляем их к пространству имен
+            $namespace = 'App\\Controllers\\' . implode('\\', $controllerParts);
+            if (!empty($controllerParts)) {
+                $namespace .= '\\';
+            }
+            
+            $controller = $namespace . $controllerName;
 
             if (class_exists($controller)) {
                 // Получаем соединение с базой данных
@@ -86,24 +99,60 @@ class Router {
                 if (method_exists($controller_object, $action)) {
                     // Передаем параметры в метод контроллера
                     return $controller_object->$action($this->params);
+                } else {
+                    // Метод не найден
+                    if ($this->isAjaxRequest()) {
+                        $this->sendJsonResponse(false, 'Метод не найден', 404);
+                    } else {
+                        $this->show404();
+                    }
+                }
+            } else {
+                // Контроллер не найден
+                if ($this->isAjaxRequest()) {
+                    $this->sendJsonResponse(false, 'Контроллер не найден', 404);
+                } else {
+                    $this->show404();
                 }
             }
-        }
-        
-        // Проверяем, является ли запрос AJAX
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            header('Content-Type: application/json');
-            http_response_code(404);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Маршрут не найден'
-            ]);
         } else {
-            // Для обычных запросов показываем HTML страницу 404
-            header("HTTP/1.0 404 Not Found");
-            echo "Страница не найдена";
+            // Маршрут не найден
+            if ($this->isAjaxRequest()) {
+                $this->sendJsonResponse(false, 'Маршрут не найден', 404);
+            } else {
+                $this->show404();
+            }
         }
+    }
+
+    /**
+     * Проверяет, является ли запрос AJAX
+     */
+    private function isAjaxRequest() {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+
+    /**
+     * Отправляет JSON-ответ
+     */
+    private function sendJsonResponse($success, $message, $statusCode = 200) {
+        header('Content-Type: application/json');
+        http_response_code($statusCode);
+        echo json_encode([
+            'success' => $success,
+            'message' => $message
+        ]);
+        exit;
+    }
+
+    /**
+     * Показывает страницу 404
+     */
+    private function show404() {
+        header("HTTP/1.0 404 Not Found");
+        echo "Страница не найдена";
+        exit;
     }
 
     /**

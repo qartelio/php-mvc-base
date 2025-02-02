@@ -72,26 +72,30 @@ return [
         'action' => 'attendance',
         'middleware' => ['AdminAuth']
     ],
+
+    // Маршруты для уроков
     'admin/lessons' => [
-        'controller' => 'admin',
-        'action' => 'lessons',
+        'controller' => 'admin/lessons',
+        'action' => 'index',
         'middleware' => ['AdminAuth']
     ],
     'admin/lessons/create' => [
-        'controller' => 'admin',
-        'action' => 'createLesson',
+        'controller' => 'admin/lessons',
+        'action' => 'create',
         'middleware' => ['AdminAuth']
     ],
     'admin/lessons/update' => [
-        'controller' => 'admin',
-        'action' => 'updateLesson',
+        'controller' => 'admin/lessons',
+        'action' => 'update',
         'middleware' => ['AdminAuth']
     ],
     'admin/lessons/delete/([0-9]+)' => [
-        'controller' => 'admin',
-        'action' => 'deleteLesson',
+        'controller' => 'admin/lessons',
+        'action' => 'delete',
         'middleware' => ['AdminAuth']
     ],
+
+    // Маршрут для студентов
     'admin/students' => [
         'controller' => 'admin',
         'action' => 'students',
