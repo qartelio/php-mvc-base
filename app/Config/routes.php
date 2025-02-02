@@ -35,6 +35,18 @@ return [
         'controller' => 'student',
         'action' => 'logout'
     ],
+    
+    // Новые маршруты для уроков
+    'student/lessons' => [
+        'controller' => 'student/lessons',
+        'action' => 'index',
+        'middleware' => ['StudentAuth']
+    ],
+    'student/lessons/attend' => [
+        'controller' => 'student/lessons',
+        'action' => 'attend',
+        'middleware' => ['StudentAuth']
+    ],
 
     // Маршруты для администраторов
     'admin' => [

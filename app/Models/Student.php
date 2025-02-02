@@ -3,13 +3,29 @@
 namespace App\Models;
 
 use App\Core\Model;
+use App\Core\Database;
 
 class Student extends Model {
     protected $table = 'students';
     protected $db;
     
-    public function __construct($db = null) {
-        $this->db = $db;
+    public function __construct() {
+        parent::__construct();
+        $this->db = Database::getInstance()->getConnection();
+    }
+    
+    /**
+     * Получение студента по ID
+     */
+    public function getById($id) {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch();
+        } catch (\PDOException $e) {
+            error_log('Ошибка при получении студента по ID: ' . $e->getMessage());
+            return null;
+        }
     }
     
     /**

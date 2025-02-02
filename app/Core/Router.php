@@ -65,12 +65,38 @@ class Router {
     }
 
     /**
+     * Проверяет middleware для маршрута
+     */
+    private function checkMiddleware($middlewares) {
+        if (!empty($middlewares)) {
+            foreach ($middlewares as $middleware) {
+                $middlewareClass = "App\\Middleware\\{$middleware}Middleware";
+                if (class_exists($middlewareClass)) {
+                    if (method_exists($middlewareClass, 'authenticate')) {
+                        if (!$middlewareClass::authenticate()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Диспетчер маршрутов
      */
     public function dispatch($url) {
         $url = $this->parseUrl();
         
         if ($this->match($url)) {
+            // Проверяем middleware перед выполнением контроллера
+            if (isset($this->params['middleware'])) {
+                if (!$this->checkMiddleware($this->params['middleware'])) {
+                    return false;
+                }
+            }
+
             $controllerPath = $this->params['controller'];
             $controllerParts = explode('/', $controllerPath);
             

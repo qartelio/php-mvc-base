@@ -60,59 +60,100 @@
             <!-- Список уроков -->
             <h2 class="text-xl font-bold text-gray-800 mb-4">Ближайшие уроки</h2>
             <div class="space-y-4">
-                <!-- Карточка урока -->
-                <div class="lesson-card bg-white rounded-xl p-4 shadow-lg border border-gray-100">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">Введение в программирование</h3>
-                        <div class="flex items-center text-gray-600 mb-2">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            <span>Айдар Сарсенов</span>
+                <?php if (!empty($lessons)): ?>
+                    <?php foreach ($lessons as $lesson): ?>
+                        <!-- Карточка урока -->
+                        <div class="lesson-card bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2"><?= htmlspecialchars($lesson['title'] ?? 'Без названия') ?></h3>
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    <span><?= htmlspecialchars($lesson['teacher_name'] ?? 'Преподаватель не указан') ?></span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span><?= $lesson['datetime'] ? date('d.m.Y H:i', strtotime($lesson['datetime'])) : 'Время не указано' ?></span>
+                                </div>
+                            </div>
+                            <?php if (!$lesson['is_active']): ?>
+                                <button disabled class="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Урок пройден
+                                </button>
+                            <?php else: ?>
+                                <button 
+                                    onclick="attendLesson(<?= $lesson['id'] ?>, this)"
+                                    class="inline-flex items-center justify-center w-full px-4 py-2 <?= $lesson['attended'] ? 'bg-green-600' : 'bg-blue-600' ?> text-white font-medium rounded-lg hover:<?= $lesson['attended'] ? 'bg-green-700' : 'bg-blue-700' ?> transition-colors"
+                                    <?= $lesson['attended'] ? 'data-attended="true"' : '' ?>
+                                >
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <?php if ($lesson['attended']): ?>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        <?php else: ?>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        <?php endif; ?>
+                                    </svg>
+                                    <?= $lesson['attended'] ? 'Зайти повторно' : 'Зайти на урок' ?>
+                                </button>
+                            <?php endif; ?>
                         </div>
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <span>Вторник, 20:00</span>
-                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="text-center text-gray-500 py-8">
+                        <p>Уроков пока нет</p>
                     </div>
-                    <a href="#" class="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
-                        Зайти на урок
-                    </a>
-                </div>
-
-                <!-- Карточка урока (пример второго урока) -->
-                <div class="lesson-card bg-white rounded-xl p-4 shadow-lg border border-gray-100">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">Основы HTML и CSS</h3>
-                        <div class="flex items-center text-gray-600 mb-2">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            <span>Марат Алимов</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <span>Пятница, 20:00</span>
-                        </div>
-                    </div>
-                    <a href="#" class="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
-                        Зайти на урок
-                    </a>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script>
+        function attendLesson(lessonId, button) {
+            fetch('/student/lessons/attend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'lesson_id=' + lessonId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (!button.dataset.attended) {
+                        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        button.classList.add('bg-green-600', 'hover:bg-green-700');
+                        button.dataset.attended = 'true';
+                        
+                        // Обновляем иконку
+                        const svg = button.querySelector('svg');
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+                        
+                        // Обновляем текст
+                        button.lastChild.textContent = 'Зайти повторно';
+                    }
+                    
+                    // Если есть zoom_link, перенаправляем на него
+                    if (data.zoom_link) {
+                        window.open(data.zoom_link, '_blank');
+                    }
+                }
+                // Показываем сообщение пользователю только если нет zoom_link
+                if (!data.zoom_link) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Произошла ошибка при записи посещения');
+            });
+        }
+    </script>
 </body>
 </html>

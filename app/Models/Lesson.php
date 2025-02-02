@@ -22,6 +22,26 @@ class Lesson extends Model
         }
     }
 
+    /**
+     * Получает список уроков для определенной группы
+     */
+    public function getLessonsByGroup($groupId)
+    {
+        try {
+            $sql = "SELECT l.*, l.speaker as teacher_name 
+                    FROM lessons l 
+                    WHERE l.`group` = :group_id 
+                    ORDER BY l.datetime DESC";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['group_id' => $groupId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log('Ошибка при получении списка уроков для группы: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     public function create($data)
     {
         try {
@@ -77,6 +97,22 @@ class Lesson extends Model
         } catch (PDOException $e) {
             error_log('PDO ошибка при обновлении урока: ' . $e->getMessage());
             throw $e;
+        }
+    }
+
+    /**
+     * Получает урок по ID
+     */
+    public function getById($id)
+    {
+        try {
+            $sql = "SELECT * FROM lessons WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log('Ошибка при получении урока по ID: ' . $e->getMessage());
+            return null;
         }
     }
 
