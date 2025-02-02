@@ -1,6 +1,13 @@
 # Используем последнюю стабильную версию PHP с Apache
 FROM php:8.3-apache
 
+# Устанавливаем временную зону
+ENV TZ=Asia/Tashkent
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Настраиваем временную зону PHP
+RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/timezone.ini
+
 # Устанавливаем необходимые пакеты
 RUN apt-get update && apt-get install -y \
     libzip-dev \
