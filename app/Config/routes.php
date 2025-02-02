@@ -48,6 +48,28 @@ return [
         'middleware' => ['StudentAuth']
     ],
 
+    // Профиль студента
+    'student/profile' => [
+        'controller' => 'student/profile',
+        'action' => 'index',
+        'middleware' => ['StudentAuth']
+    ],
+    'student/profile/update' => [
+        'controller' => 'student/profile',
+        'action' => 'update',
+        'middleware' => ['StudentAuth']
+    ],
+    'student/profile/update-avatar' => [
+        'controller' => 'student/profile',
+        'action' => 'updateAvatar',
+        'middleware' => ['StudentAuth']
+    ],
+    'student/profile/change-password' => [
+        'controller' => 'student/profile',
+        'action' => 'changePassword',
+        'middleware' => ['StudentAuth']
+    ],
+
     // Маршруты для администраторов
     'admin/register' => [
         'controller' => 'admin',
