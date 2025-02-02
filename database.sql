@@ -110,6 +110,8 @@ CREATE TABLE `students` (
   `group_id` int DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `remember_token` varchar(255) DEFAULT NULL,
+  `total_points_cache` int DEFAULT NULL,
+  `points_cache_updated_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -234,6 +236,48 @@ ALTER TABLE `lesson_activity_points`
 ALTER TABLE `lesson_points`
   ADD CONSTRAINT `lesson_points_ibfk_1` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`),
   ADD CONSTRAINT `lesson_points_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`);
+
+-- Триггеры для обновления кэша
+DELIMITER //
+
+CREATE TRIGGER update_points_cache_after_activity_insert 
+AFTER INSERT ON lesson_activity_points
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET points_cache_updated_at = NULL 
+    WHERE id = NEW.student_id;
+END//
+
+CREATE TRIGGER update_points_cache_after_activity_update
+AFTER UPDATE ON lesson_activity_points
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET points_cache_updated_at = NULL 
+    WHERE id = NEW.student_id;
+END//
+
+CREATE TRIGGER update_points_cache_after_lesson_points_insert
+AFTER INSERT ON lesson_points
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET points_cache_updated_at = NULL 
+    WHERE id = NEW.student_id;
+END//
+
+CREATE TRIGGER update_points_cache_after_lesson_points_update
+AFTER UPDATE ON lesson_points
+FOR EACH ROW
+BEGIN
+    UPDATE students 
+    SET points_cache_updated_at = NULL 
+    WHERE id = NEW.student_id;
+END//
+
+DELIMITER ;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

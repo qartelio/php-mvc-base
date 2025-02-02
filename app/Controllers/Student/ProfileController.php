@@ -40,6 +40,13 @@ class ProfileController extends Controller
             return;
         }
 
+        // Получаем общее количество баллов с отладкой
+        error_log('Calculating total points for student ID: ' . $studentId);
+        $totalPoints = $this->studentModel->getTotalPoints($studentId);
+        error_log('Total points calculated: ' . $totalPoints);
+        $student['total_points'] = $totalPoints;
+        error_log('Final student data: ' . print_r($student, true));
+
         $this->view('student/profile', ['student' => $student]);
     }
 

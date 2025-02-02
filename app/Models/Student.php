@@ -130,4 +130,56 @@ class Student extends Model {
             return null;
         }
     }
+
+    /**
+     * Получение общего количества баллов студента
+     * @param int $studentId ID студента
+     * @return int Общее количество баллов
+     */
+    public function getTotalPoints($studentId) {
+        try {
+            // Проверяем наличие актуального кэша
+            $stmt = $this->db->prepare("
+                SELECT total_points_cache, points_cache_updated_at 
+                FROM {$this->table} 
+                WHERE id = ?
+            ");
+            $stmt->execute([$studentId]);
+            $cacheData = $stmt->fetch();
+            
+            // Если кэш актуален, возвращаем его
+            if ($cacheData['points_cache_updated_at'] !== null && $cacheData['total_points_cache'] !== null) {
+                return $cacheData['total_points_cache'];
+            }
+            
+            // Если кэш неактуален, считаем сумму баллов
+            $stmt = $this->db->prepare("
+                SELECT 
+                    COALESCE(
+                        (SELECT SUM(points) FROM lesson_activity_points WHERE student_id = :student_id), 
+                        0
+                    ) +
+                    COALESCE(
+                        (SELECT SUM(points) FROM lesson_points WHERE student_id = :student_id),
+                        0
+                    ) as total_points
+            ");
+            $stmt->execute(['student_id' => $studentId]);
+            $result = $stmt->fetch();
+            $totalPoints = (int)$result['total_points'];
+            
+            // Обновляем кэш
+            $updateStmt = $this->db->prepare("
+                UPDATE {$this->table} 
+                SET total_points_cache = ?, points_cache_updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ");
+            $updateStmt->execute([$totalPoints, $studentId]);
+            
+            return $totalPoints;
+        } catch (\PDOException $e) {
+            error_log('Ошибка при получении общего количества баллов: ' . $e->getMessage());
+            return 0;
+        }
+    }
 }

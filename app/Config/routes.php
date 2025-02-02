@@ -28,8 +28,9 @@ return [
         'action' => 'login'
     ],
     'student/dashboard' => [
-        'controller' => 'student',
-        'action' => 'dashboard'
+        'controller' => 'student/dashboard',
+        'action' => 'index',
+        'middleware' => ['StudentAuth']
     ],
     'student/logout' => [
         'controller' => 'student',
